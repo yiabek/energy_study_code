@@ -43,7 +43,7 @@ def wind_potential(windspeed_hourly):
 ### This calculates solar potential using downward surface solar radiation
 ### Inputs can either be scalars or arrays of air temperature and solar radiation
 ## Output is solar capacity factor and relative efficiency     
-def solar_potential(airtemp,ssrd):
+def solar_potential(airtemp, ssrd):
     print('Calculating solar potential.... ')
     
     ### Variables for calculating solar potential
