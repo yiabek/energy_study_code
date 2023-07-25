@@ -79,57 +79,58 @@ lon = NumPy array of longitude subset to CONUS
  
 """
 def anomaly_15_calc(files,lon_var,lat_var,field_var,time_var,yearbeg,yearend):
+    
     ### Open one netCDF file to extract shape
-    var_netcdf=Dataset(files[0],"r")
+    var_netcdf = Dataset(files[0],"r")
     var_data = np.asarray(var_netcdf.variables[field_var][0],dtype="float")
-    datearray=var_netcdf.variables[time_var][:]
-    timeunits=var_netcdf.variables[time_var].units
-    varunits=var_netcdf.variables[field_var].units
-    lat=np.asarray(var_netcdf[lat_var][:],dtype="float")
-    lon=np.asarray(var_netcdf[lon_var][:],dtype="float")    
+    datearray = var_netcdf.variables[time_var][:]
+    timeunits = var_netcdf.variables[time_var].units
+    #varunits = var_netcdf.variables[field_var].units
+    lat = np.asarray(var_netcdf[lat_var][:],dtype="float")
+    lon = np.asarray(var_netcdf[lon_var][:],dtype="float")    
     var_netcdf.close()
 
     ### Initiating arrays for multi-file datasets
-    var_data=np.empty([0,var_data.shape[0],var_data.shape[1]])
-    datatime=np.empty(0, dtype='datetime64')
+    var_data = np.empty([0,var_data.shape[0],var_data.shape[1]])
+    datatime = np.empty(0, dtype='datetime64')
 
     ### Loop through files and extract variables
     for f in range(len(files)):
         file = files[f]
         data = Dataset(file)
         var = np.array(data[field_var])
-        datearray=data.variables[time_var][:]
-        timeunits=data.variables[time_var].units
-        datetemp=np.array([num2date(t,units=timeunits) for t in datearray]) #daily data
-        datatime=np.concatenate([datatime,datetemp])
+        datearray = data.variables[time_var][:]
+        timeunits = data.variables[time_var].units
+        datetemp = np.array([num2date(t,units=timeunits) for t in datearray]) #daily data
+        datatime = np.concatenate([datatime,datetemp])
         var_data = np.concatenate([var_data,var], axis=0)
         data.close()    
 
     # extract years for subsetting 
-    yr=np.array([int('{0.year:04d}'.format(t)) for t in list(datatime)])
-    leapstr=np.array([t.strftime('%m-%d') for t in list(datatime)])
-    date=np.array([t.strftime('%Y-%m-%d')for t in list(datatime)])
+    yr = np.array([int('{0.year:04d}'.format(t)) for t in list(datatime)])
+    leapstr = np.array([t.strftime('%m-%d') for t in list(datatime)])
+    date = np.array([t.strftime('%Y-%m-%d')for t in list(datatime)])
     anom_leapstr = leapstr.copy()
        
     ### Fix longitude
     if lon[lon>180].size>0:
-        lon[lon>180]=lon[lon>180]-360
+        lon[lon>180] = lon[lon>180]-360
 
     ### Reshape data to [lon, lat, time] dimensions for code to run properly
     if len(var_data.shape) == 4:
-       var_data=np.squeeze(var_data)
+       var_data = np.squeeze(var_data)
     if var_data.shape == (len(lon),len(lat),len(datatime)):
-       var_data=var_data
+       var_data = var_data
     elif var_data.shape == (len(lat),len(datatime),len(lon)):
-       var_data=np.transpose(var_data,(2,0,1))
+       var_data = np.transpose(var_data,(2,0,1))
     elif var_data.shape == (len(lon),len(datatime),len(lat)):
-       var_data=np.transpose(var_data,(0,2,1))
+       var_data = np.transpose(var_data,(0,2,1))
     elif var_data.shape == (len(datatime),len(lon),len(lat)):
-       var_data=np.transpose(var_data,(1,2,0))
+       var_data = np.transpose(var_data,(1,2,0))
     elif var_data.shape == (len(lat),len(lon),len(datatime)):
-       var_data=np.transpose(var_data,(1,0,2))
+       var_data = np.transpose(var_data,(1,0,2))
     elif var_data.shape == (len(datatime),len(lat),len(lon)):
-       var_data=np.transpose(var_data,(2,1,0))
+       var_data = np.transpose(var_data,(2,1,0))
      
     ### Subset data to CONUS    
     north_lat_idx,south_lat_idx,east_lon_idx,west_lon_idx=conus_subset(lat,lon)
@@ -157,18 +158,18 @@ def anomaly_15_calc(files,lon_var,lat_var,field_var,time_var,yearbeg,yearend):
     
 
     ### Remove leap days if needed
-    dateind=(leapstr != '02-29')
-    anom_dateind=(anom_leapstr != '02-29')
-    leapstr=leapstr[dateind]
-    date=date[dateind]
-    anom_leapstr=anom_leapstr[anom_dateind]
-    var_data=var_data[:,:,dateind]
-    anom_data=anom_data[:,:,anom_dateind]
+    dateind = (leapstr != '02-29')
+    anom_dateind = (anom_leapstr != '02-29')
+    leapstr = leapstr[dateind]
+    date = date[dateind]
+    anom_leapstr = anom_leapstr[anom_dateind]
+    var_data = var_data[:,:,dateind]
+    anom_data = anom_data[:,:,anom_dateind]
 
     ### Convert Celsius to Kelvin
     #if varunits == 'K' or varunits == 'Kelvin':
-    var_data=var_data-273.15
-    anom_data=anom_data-273.15
+    var_data = var_data-273.15
+    anom_data = anom_data-273.15
         
 
     ### Find unique days for calculating anomalies   
