@@ -10,7 +10,7 @@ This script outputs the following metrics for extreme hot and cold:
     5) latitude and longitude subset to the CONUS
     
 Credit to Dr. Arielle Catalano for developing the original anomaly calculation script
-from which the aanomaly_15_calc function is based on.
+from which the anomaly_15_calc function is based on.
 
 @author: yiannabekris
 """
