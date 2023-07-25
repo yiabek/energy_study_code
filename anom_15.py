@@ -84,7 +84,7 @@ def anomaly_15_calc(files,lon_var,lat_var,field_var,time_var,yearbeg,yearend):
     var_data = np.asarray(var_netcdf.variables[field_var][0],dtype="float")
     datearray=var_netcdf.variables[time_var][:]
     timeunits=var_netcdf.variables[time_var].units
-    #varunits=var_netcdf.variables[field_var].units
+    varunits=var_netcdf.variables[field_var].units
     lat=np.asarray(var_netcdf[lat_var][:],dtype="float")
     lon=np.asarray(var_netcdf[lon_var][:],dtype="float")    
     var_netcdf.close()
