@@ -7,7 +7,7 @@ Created on Mon Nov 28 11:07:50 2022
 
 This script molds the percent change data
 into the shape of each NERC region and saves the data
-as NumPy arrays which are plotted by figure2.py
+as NumPy arrays which are plotted by figure4.py
 
 """
 
