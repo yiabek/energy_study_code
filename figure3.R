@@ -1,6 +1,6 @@
 #### figure3.R
-## This script creates energy potential plots for Figure 5.
-## These plots include probability distributions for wind power per turbine
+## This script creates energy potential plots for Figure 3.
+## These plots include probability distributions for wind capacity factor
 ## and solar capacity factor as well as their medians, 
 ## grouped by NERC region, season, and event type.
 ## The significance results of the permutation tests are plotted
