@@ -67,7 +67,6 @@ frequency_max <- frequency %>%
 
 ## Calculate the year with the maximum extent
 extent_max <- Extreme.Events %>%
-  filter()
   group_by(
     NERC.Region, Season,
   )  %>%
